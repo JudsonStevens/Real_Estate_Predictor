@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SearchResults:searchresults xsi:schemaLocation="http://www.zillow.com/static/xsd/SearchResults.xsd https://www.zillowstatic.com/vstatic/18f7df5/static/xsd/SearchResults.xsd" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:SearchResults="http://www.zillow.com/static/xsd/SearchResults.xsd">
+  <request>
+    <address>2161 Olive Street</address>
+    <citystatezip>Denver, CO</citystatezip>
+  </request>
+  <message>
+    <text>Request successfully processed</text>
+    <code>0</code>
+  </message>
+  <response>
+    <results>
+      <result>
+        <zpid>13287629</zpid>
+        <links>
+          <homedetails>https://www.zillow.com/homedetails/2161-Olive-St-Denver-CO-80207/13287629_zpid/</homedetails>
+          <graphsanddata>http://www.zillow.com/homedetails/2161-Olive-St-Denver-CO-80207/13287629_zpid/#charts-and-data</graphsanddata>
+          <mapthishome>http://www.zillow.com/homes/13287629_zpid/</mapthishome>
+          <comparables>http://www.zillow.com/homes/comps/13287629_zpid/</comparables>
+        </links>
+        <address>
+          <street>2161 Olive St</street>
+          <zipcode>80207</zipcode>
+          <city>DENVER</city>
+          <state>CO</state>
+          <latitude>39.749664</latitude>
+          <longitude>-104.907254</longitude>
+        </address>
+        <FIPScounty>8031</FIPScounty>
+        <useCode>SingleFamily</useCode>
+        <taxAssessmentYear>2017</taxAssessmentYear>
+        <taxAssessment>318700.0</taxAssessment>
+        <yearBuilt>1948</yearBuilt>
+        <lotSizeSqFt>6100</lotSizeSqFt>
+        <finishedSqFt>973</finishedSqFt>
+        <bathrooms>2.0</bathrooms>
+        <bedrooms>2</bedrooms>
+        <totalRooms>5</totalRooms>
+        <lastSoldDate>11/30/1993</lastSoldDate>
+        <lastSoldPrice currency="USD">35000</lastSoldPrice>
+        <zestimate>
+          <amount currency="USD">411510</amount>
+          <last-updated>10/25/2018</last-updated>
+          <oneWeekChange deprecated="true"></oneWeekChange>
+          <valueChange duration="30" currency="USD">2376</valueChange>
+          <valuationRange>
+            <low currency="USD">386819</low>
+            <high currency="USD">432085</high>
+          </valuationRange>
+          <percentile>0</percentile>
+        </zestimate>
+        <localRealEstate>
+          <region name="South Park Hill" id="268740" type="neighborhood">
+            <zindexValue>660,500</zindexValue>
+            <links>
+              <overview>http://www.zillow.com/local-info/CO-Denver/South-Park-Hill/r_268740/</overview>
+              <forSaleByOwner>http://www.zillow.com/south-park-hill-denver-co/fsbo/</forSaleByOwner>
+              <forSale>http://www.zillow.com/south-park-hill-denver-co/</forSale>
+            </links>
+          </region>
+        </localRealEstate>
+      </result>
+    </results>
+  </response>
+</SearchResults:searchresults>
+<!-- H:037  T:105ms  S:1206  R:Thu Oct 25 17:54:39 PDT 2018  B:5.0.56967-master.aed995a~delivery_ready.6a66334 -->
