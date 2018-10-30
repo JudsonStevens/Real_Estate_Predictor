@@ -14,7 +14,7 @@ def main():
 
   with open('DenverAdresses.csv', mode='r') as csv_file:
     csv_reader = csv.DictReader(csv_file)
-    for i in range((865+629+1)):
+    for i in range((865+629+1025+1)):
       next(csv_reader)
       line_count = 1
     with open('DenverHousingData.csv', mode='a', newline='') as write_file:
@@ -42,10 +42,11 @@ def main():
             error_seven_count += 1 
             continue
           if soup.code.text == '3' or soup.code.text == '4':
-            print(f'Encountered code {soup.code.text}, ending program.')
+            print(f'Encountered code message {soup.code.text}, ending program.')
             break
           if soup.code.text == '508':
             print(f'Address could not be found.')
+            row_count += 1
             continue
           if soup.code.text != '0':
             print(f'Encountered code {soup.code.text}.')
