@@ -18,7 +18,7 @@ def main():
     csv_reader = csv.DictReader(csv_file)
     
     ## Skip to the current line. This is a sum of all of the row counts from running the program. Initialize the line count to 1 so it doesn't re-read the headers.
-    for i in range((865+629+1025+1743+1687+1901+1950+1934+1810+1)):
+    for i in range((865+629+1025+1743+1687+1901+1950+1934+1810+1516+275+1292+1288+1320+1323+1207+1)):
       next(csv_reader)
       line_count = 1
     
@@ -63,6 +63,7 @@ def main():
           ## These are for the various response codes. Too many API requests consists of 3, 4, or 7. Not found address is 508. A response code of 0 means proceed.
           if soup.code.text == '7':
             print(f'API request refused.')
+            row_count += 1
             error_seven_count += 1 
             continue
           if soup.code.text == '3' or soup.code.text == '4':
