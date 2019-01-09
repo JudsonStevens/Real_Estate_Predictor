@@ -22,12 +22,14 @@ train_df = train_df[np.abs(train_df.year_built - train_df.year_built.mean()) <= 
 # train_df = train_df[(np.abs(stats.zscore(train_df)) < 3).all(axis=1)]
 
 plt.figure(figsize=(12,12))
-plt.scatter(train_df['zestimate_amount'], train_df['living_area'])
-plt.ylabel('Living Area', fontsize=18)
-plt.xlabel('Z Estimate Amount', fontsize=18)
+plt.scatter(train_df['total_rooms'], train_df['zestimate_amount'])
+x_label = plt.ylabel('Year Built', fontsize=18, color='white')
+y_label = plt.xlabel('Z Estimate Amount', fontsize=18, color='white')
+plt.tick_params(axis='x', colors='white')
+plt.tick_params(axis='y', colors='white')
+# [i.set_color("white") for i in plt.gca().get_xticklabels()]
+# [i.set_color("white") for i in plt.gca().get_yticklabels()]
 plt.show()
-
-
 
 # 'latitude': row["LATITUDE"], 
 #                             'longitude': row["LONGITUDE"], 

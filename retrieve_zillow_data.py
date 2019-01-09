@@ -18,7 +18,7 @@ def main():
     csv_reader = csv.DictReader(csv_file)
     
     ## Skip to the current line. This is a sum of all of the row counts from running the program. Initialize the line count to 1 so it doesn't re-read the headers.
-    for i in range((865+629+1025+1743+1687+1901+1950+1934+1810+1516+275+1292+1288+1320+1323+1207+1)):
+    for i in range((865+629+1025+1743+1687+1901+1950+1934+1810+1516+275+1292+1288+1320+1323+1207+1197+1163+1544+1974+1000+1513+1)):
       next(csv_reader)
       line_count = 1
     
@@ -79,28 +79,33 @@ def main():
             row_count += 1
             continue
 
-          ## Try to proceed with the following code. This code block sets the defaults in case a row is missing.
+          ## Try to proceed with the following code. This code standardizes the error if one of the attributes is missing.
           try:
-            z_id = 0 if soup.zpid is None else soup.zpid.text
-            comp_link = '' if soup.comparables is None else soup.comparables.text
-            use_code = '' if soup.useCode is None else soup.useCode.text
-            tax_as_year = 0 if soup.taxAssessmentYear is None else soup.taxAssessmentYear.text
-            tax_as_amount = 0 if soup.taxAssessment is None else soup.taxAssessment.text
-            year_built = 0 if soup.yearBuilt is None else soup.yearBuilt.text
-            lot_size = 0 if soup.lotSizeSqFt is None else soup.lotSizeSqFt.text
-            living = 0 if soup.finishedSqFt is None else soup.finishedSqFt.text
-            baths = 0 if soup.bathrooms is None else soup.bathrooms.text
-            total_rooms = 0 if soup.totalRooms is None else soup.totalRooms.text
-            last_sold_date = 0 if soup.lastSoldDate is None else soup.lastSoldDate.text
-            last_sold_price = 0 if soup.lastSoldPrice is None else soup.lastSoldPrice.text
-            z_amount = 0 if soup.zestimate.amount is None else soup.zestimate.amount.text
-            reg_name = '' if soup.localRealEstate.region is None else soup.localRealEstate.region['name']
-            reg_type = '' if soup.localRealEstate.region is None else soup.localRealEstate.region['type']
+            z_id = soup.zpid.text
+            comp_link = soup.comparables.text
+            use_code = soup.useCode.text
+            tax_as_year = soup.taxAssessmentYear.text
+            tax_as_amount = soup.taxAssessment.text
+            year_built = soup.yearBuilt.text
+            lot_size = soup.lotSizeSqFt.text
+            living = soup.finishedSqFt.text
+            baths = soup.bathrooms.text
+            total_rooms = soup.totalRooms.text
+            last_sold_date = soup.lastSoldDate.text
+            last_sold_price = soup.lastSoldPrice.text
+            z_amount = soup.zestimate.amount.text
+            reg_name = soup.localRealEstate.region['name']
+            reg_type = soup.localRealEstate.region['type']
             if soup.localRealEstate.region is None or soup.localRealEstate.region.zindexValue is None:
-              z_value_reg = 0 
+              z_value_reg = 0
             else:
-              z_value_reg = soup.localRealEstate.region.zindexValue.text
+              z_value_reg = soup.localRealEstate.region.zindexValue
           except AttributeError as error:
+            row_count += 1
+            print(f'Error {error}')
+            continue
+          except TypeError as error:
+            row_count += 1
             print(f'Error {error}')
             continue
 
