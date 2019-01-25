@@ -2,20 +2,21 @@ from bs4 import BeautifulSoup
 import psycopg2
 import requests
 from configparser import ConfigParser
-from datetime import date
+import googlemaps
+from dateutil import parser
 
-def config(filename='database.ini', section='postgresql'):
+def config(section='postgresql', filename='database.ini'):
     parser = ConfigParser()
     parser.read(filename)
 
-    db = {}
+    arguments = {}
     if parser.has_section(section):
         params = parser.items(section)
         for param in params:
-            db[param[0]] = param[1]
+            arguments[param[0]] = param[1]
     else:
         raise Exception(f'Section {section} not found in the {filename} file')
-    return db
+    return arguments
 
 def database_connect():
     conn = None
@@ -80,7 +81,59 @@ def get_list_of_web_addresses():
     conn.close()
     print('Database connection closed.')
 
+def get_sale_info():
+    # Connect to the database and grab all of the neighborhood URI's in order to reach each page.
+    cur, conn = database_connect()
+    cur.execute("""
+                    SELECT neighborhood_web_address
+                    FROM denver_sale_data_neighborhood_urls
+                """)
+    uris = cur.fetchall()
+    base_url = 'https://www.denvergov.org/apps/realproperty/'
+    uris = [item[0] for item in uris]
+    gmaps = googlemaps.Client(key=config('google_maps_api')['key'])
+    # Length of uris is 170
+    results = []
+    for entry in uris[145:170]:
+        try:
+            response = requests.get(base_url + entry)
+            soup = BeautifulSoup(response.content, features='html.parser')
+            # Iterate through every <tr> tag and grab the text out of it.
+            for element in soup.find_all('tr')[3:]:
+                list_data = element.text.replace(',', '').replace("\n", ",").replace("\xa0", ",").replace("\r", ",").replace("\t", ',').split(',')
+                list_data = [x.split('-')[0] for x in list_data if x]
+                if isinstance(int(list_data[0][0]), int):
+                    list_data.append(gmaps.geocode(list_data[1] + ', Denver, CO')[0]['geometry']['location'])
+                    results.append(list_data)
+                    print('Geocoding data...')
+                else:
+                    continue
+        except Exception as error:
+            print(error)
+    conn.close()
+    return results
+
+def record_sale_info():
+    cur, conn = database_connect()
+
+    results = get_sale_info()
+
+    for result in results:
+        cur.execute("""
+                        INSERT INTO denver_sale_data
+                        (sale_price, address, sale_date, parcel_id, geographic_location)
+                        VALUES
+                        (%s, %s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326))
+                    """,
+                        (float(result[3].replace("$", "")), result[1], parser.parse(result[2]), result[0], result[4]['lat'], result[4]['lng'])
+                    )
+    conn.commit()
+    conn.close()
+    print("Closing database connection...")
+
+
+
 if __name__ == '__main__':
-    get_list_of_web_addresses()
+    record_sale_info()
 
 

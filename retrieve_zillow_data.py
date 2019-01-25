@@ -18,7 +18,7 @@ def main():
     csv_reader = csv.DictReader(csv_file)
     
     ## Skip to the current line. This is a sum of all of the row counts from running the program. Initialize the line count to 1 so it doesn't re-read the headers.
-    for i in range((865+629+1025+1743+1687+1901+1950+1934+1810+1516+275+1292+1288+1320+1323+1207+1197+1163+1544+1974+1000+1513+1)):
+    for i in range((865+629+1025+1743+1687+1901+1950+1934+1810+1516+275+1292+1288+1320+1323+1207+1197+1163+1544+1974+1000+1513+1+1250+1400+2262)):
       next(csv_reader)
       line_count = 1
     
