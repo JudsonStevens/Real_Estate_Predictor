@@ -4,6 +4,7 @@ import csv
 from pyproj import Proj, transform
 from datetime import datetime
 from configparser import ConfigParser
+import googlemaps
 
 def config(section='postgresql', filename='database.ini'):
     parser = ConfigParser()
@@ -32,23 +33,9 @@ def database_connect():
         print(error)
 
 
-def main():
-  curs, conn = database_connect()
+def input_liquor_store_data():
+  cur, conn = database_connect()
   csv_file = './CSV_Files/liquor_licenses.csv'
-
-  # ## Create the table needed.
-  # sql = """
-  #       CREATE TABLE liquor_license(
-  #         id            INTEGER PRIMARY KEY,
-  #         location      GEOMETRY(Point, 4326),
-  #         full_address  VARCHAR(256),
-  #         business_name VARCHAR(256),
-  #         license_type  VARCHAR(256),
-  #         end_date      DATE
-  #       )
-  #     """
-  # curs.execute(sql)
-  # conn.commit()
 
   with open(csv_file, mode='r') as csv_data_set:
     csv_reader = csv.DictReader(csv_data_set)
@@ -67,9 +54,61 @@ def main():
 
       # Insert the values into the table
       print('Inserting values into the table....')
-      curs.execute("INSERT INTO liquor_license (location, full_address, business_name, license_type, end_date) VALUES (ST_SetSRID(ST_MakePoint(%s, %s), 4326), %s, %s, %s, %s)", (longitude, latitude, full_address, business_name, license_type, datetime.strptime(end_date.split()[0], '%m/%d/%y').date()))
+      cur.execute("""INSERT INTO liquor_license (location, full_address, business_name, license_type, end_date) 
+                    VALUES (ST_SetSRID(ST_MakePoint(%s, %s), 4326), %s, %s, %s, %s)""", 
+                     (longitude, latitude, full_address, business_name, license_type, datetime.strptime(end_date.split()[0], '%m/%d/%y').date()))
+      conn.commit()
+    conn.close()
+
+def input_dog_park_data():
+  cur, conn = database_connect()
+  csv_file = './CSV_Files/dog_parks.csv'
+
+  gmaps = googlemaps.Client(key=config('google_maps_api')['key'])
+  with open(csv_file, mode='r') as csv_data_set:
+    csv_reader = csv.DictReader(csv_data_set)
+    for i in range(1):
+      next(csv_reader)
+    for row in csv_reader:
+      place_id = gmaps.find_place(f"{row['LOCATION']}, Denver CO", "textquery")
+      place = gmaps.place(place_id['candidates'][0]['place_id'])
+      latitude, longitude = place['result']['geometry']['location']['lat'], place['result']['geometry']['location']['lng']
+      if row['WATER'] == 'None':
+        water_available = 'no'
+      else:
+        water_available = row['WATER']
+      if row['SHADE'] == 'None':
+        shaded = 'no'
+      else:
+        shaded = row['SHADE']
+      park_name, fenced, number_of_acres = row['LOCATION'], row['FENCED'], float(row['GIS_ACRES'])
+      
+      print('Inserting values into the table....')
+      cur.execute("""INSERT INTO dog_park (park_name, fenced, shaded, water_available, number_of_acres, location )
+                    VALUES (%s, %s, %s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326))
+                    """,
+                    (park_name, fenced, shaded, water_available, number_of_acres, longitude, latitude))
+      conn.commit()
+    conn.close()
+
+def input_park_data():
+  cur, conn = database_connect()
+  csv_file = './CSV_Files-parks.csv'
+
+  with open(csv_file, mode='r') as csv_data_set:
+    csv_reader = csv.DictReader(csv_data_set)
+    for i in rane(1):
+      next(csv_reader)
+    for row in csv_reader:
+      print('Inserting values into the table....')
+      cur.execute("""
+                    INSERT INTO park (park_name, park_type, number_of_acres, year_park_started, location, park_image_URI, park_facilities)
+                    VALUES
+                    (%s, %s, %s, %s, ST_SetSRID(ST_MAKEPOINT(%s, %s), 4326), %s, %s)
+                  """,
+                  (row['FORMAL_NAME'], row['PARK_TYPE'], float(row['GIS_ACRES']), float(row['FIRST_AQ_DATE']), row['LONGITUTDE'], row['LATITUDE'], row['PHOTO'], row['FACILITIES']))
       conn.commit()
     conn.close()
 
 if __name__ == "__main__":
-  main()
+  input_park_data()
