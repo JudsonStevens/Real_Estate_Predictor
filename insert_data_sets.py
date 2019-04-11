@@ -93,20 +93,24 @@ def input_dog_park_data():
 
 def input_park_data():
   cur, conn = database_connect()
-  csv_file = './CSV_Files-parks.csv'
+  csv_file = './CSV_Files/parks.csv'
 
   with open(csv_file, mode='r') as csv_data_set:
     csv_reader = csv.DictReader(csv_data_set)
-    for i in rane(1):
+    for i in range(1):
       next(csv_reader)
     for row in csv_reader:
       print('Inserting values into the table....')
+      try:
+        park_date = float(row['FIRST_AQ_DATE'])
+      except:
+        park_date = 0
       cur.execute("""
                     INSERT INTO park (park_name, park_type, number_of_acres, year_park_started, location, park_image_URI, park_facilities)
                     VALUES
                     (%s, %s, %s, %s, ST_SetSRID(ST_MAKEPOINT(%s, %s), 4326), %s, %s)
                   """,
-                  (row['FORMAL_NAME'], row['PARK_TYPE'], float(row['GIS_ACRES']), float(row['FIRST_AQ_DATE']), row['LONGITUTDE'], row['LATITUDE'], row['PHOTO'], row['FACILITIES']))
+                  (row['FORMAL_NAME'], row['PARK_TYPE'], float(row['GIS_ACRES']), park_date, row['LONGITUDE'], row['LATITUDE'], row['PHOTO'], row['FACILITIES']))
       conn.commit()
     conn.close()
 
