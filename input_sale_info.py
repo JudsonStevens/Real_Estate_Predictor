@@ -94,8 +94,10 @@ def get_sale_info():
     uris = [item[0] for item in uris]
     # gmaps = googlemaps.Client(key=config('google_maps_api')['key'])
     # Length of uris is 170
+    # 0-100 done so far
+    
     results = []
-    for entry in uris[0:1]:
+    for entry in uris[170:171]:
         try:
             response = requests.get(base_url + entry)
             soup = BeautifulSoup(response.content, features='html.parser')
