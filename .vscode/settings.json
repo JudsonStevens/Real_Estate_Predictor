@@ -1,6 +1,8 @@
 {
-    "python.pythonPath": "virtualenv/bin/python",
+    "python.pythonPath": "bin/python",
     "python.linting.pylintEnabled": false,
     "python.linting.enabled": true,
-    "python.linting.mypyEnabled": true
+    "python.linting.mypyEnabled": true,
+    "python.linting.mypyPath": "/home/judson/Projects/Real_Estate_Predictor/bin/mypy",
+    "python.dataScience.jupyterServerURI": "local"
 }
