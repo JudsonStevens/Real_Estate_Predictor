@@ -26,7 +26,7 @@ train_df = train_df.astype(float)
 def drop_outliers(df, field_name):
     distance = 1.5 * (np.percentile(df[field_name], 85) - np.percentile(df[field_name], 15))
     df.drop(df[df[field_name] > distance + np.percentile(df[field_name], 85)].index, inplace=True)
-    df.drop(df[df[field_name] < np.percentile(df[field_name], 15) - distance].index, inplace=True)
+    df.drop(df[df[field_name] < np.percentile(df[field_name], 35) - distance].index, inplace=True)
 
 columns = ['tax_assessment_amount', 'year_built', 'lot_size_sq_ft', 'living_area', 'bathrooms', 'total_rooms', 'last_sold_price', 'zestimate_amount']
 
@@ -46,8 +46,8 @@ print(train_df.describe())
 # train_df.drop(train_df.index[~constrains], inplace=True)
 # train_df[(np.abs(stats.zscore(train_df)) < 3).all(axis=1)]?
 # try:
-# plt.figure(figsize=(6,4))
-# sns.heatmap(train_df.corr(),cmap='Blues',annot=False) 
+plt.figure(figsize=(6,4))
+sns.heatmap(train_df.corr(),cmap='Blues',annot=False) 
 
 l = train_df.columns.values
 number_of_columns=8
@@ -65,7 +65,7 @@ for i in range(0,len(l)):
 # sns.heatmap(cm, annot=True, cmap='viridis')
 # except ValueError:
 #   pass
-plt.figure(figsize=(12,12))
+plt.figure(figsize=(18,18))
 plt.scatter(train_df['zestimate_amount'], train_df['living_area'])
 x_label = plt.ylabel('Lot Size in Sq Ft', fontsize=18, color='black')
 y_label = plt.xlabel('Z Estimate Amount', fontsize=18, color='black')
